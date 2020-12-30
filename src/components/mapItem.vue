@@ -1,5 +1,5 @@
 <template>
-  <div :class="'wallItem ' + options.type">
+  <div :class="'wallItem ' + options.type" @click="$emit('click',options)">
     <span v-if="options.type === 'people' && ns === 'up'">↑</span>
     <span v-if="options.type === 'people' && ns === 'down'">↓</span>
     <span v-if="options.type === 'people' && ns === 'left'">🏃</span>
@@ -7,6 +7,9 @@
     <span v-if="options.type === 'boom'">💣</span>
     <span v-if="options.type === 'will'">⏹</span>
     <span v-if="options.type === 'closWill'">🔮</span>
+    <!-- <span>
+      {{options.x}},{{options.y}}
+    </span> -->
   </div>
 </template>
 
@@ -27,16 +30,17 @@ export default {
 }
 
 .wallItem{
-  width: 30px;
-  height: 30px;
+  width: 40px; 
+  height: 40px;
   background: red;
+  /* border: 2px solid red; */
   float: left;
 }
 .will{
   background: lightgreen;
 }
 .people{
-  background:red;
+  background:yellow;
 }
 .boom{
   background: lime;

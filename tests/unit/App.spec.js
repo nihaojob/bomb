@@ -17,7 +17,7 @@ describe('App init 渲染测试', () => {
       const wrapper = shallowMount(App)
       const row = wrapper.vm.map.length
       const clo = wrapper.vm.map[0].length
-      expect(wrapper.findAll({name:'wall'}).length).toBe(row * clo)
+      expect(wrapper.findAllComponents({name:'wall'}).length).toBe(row * clo)
     })
 
     it('renderWillBox 外墙渲染', () => {
@@ -35,24 +35,23 @@ describe('App init 渲染测试', () => {
       expect(wrapper.vm.wills.length !== 0).toBe(true)
     })
 
-
   })
 
 
-  describe('外墙渲染正常', () => {
-    it('行渲染', () => {
-      const wrapper = shallowMount(App)
-      expect(wrapper.vm.map.length).toBe(22)
-    })
-    it('列渲染', () => {
-      const wrapper = shallowMount(App)
-      expect(wrapper.vm.map[0].length).toBe(32)
-    })
+  describe('寻路算法', () => {
+    // it('行渲染', () => {
+    //   const wrapper = shallowMount(App)
+    //   expect(wrapper.vm.map.length).toBe(22)
+    // })
+    // it('列渲染', () => {
+    //   const wrapper = shallowMount(App)
+    //   expect(wrapper.vm.map[0].length).toBe(32)
+    // })
 
-    it('DOM数量', () => {
-      const wrapper = shallowMount(App)
-      expect(wrapper.vm.map[0].length).toBe(32)
-    })
+    // it('DOM数量', () => {
+    //   const wrapper = shallowMount(App)
+    //   expect(wrapper.vm.map[0].length).toBe(32)
+    // })
   })
 
   // it('外墙渲染正常', () => {

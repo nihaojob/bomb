@@ -1,7 +1,7 @@
 <template>
   <div id="app" v-on:keyup.left="run('left')" v-on:keyup.up="run('up')" v-on:keyup.right="run('right')" v-on:keyup.down="run('down')">
     <div class="row" :key="i" v-for="(item, i) in map">
-      <MapItem :key="i + j" :ns="ns" :options="{...wall, x: j, y: i}" v-for="(wall, j) in item" />
+      <MapItem :key="i + j" :ns="ns" :options="{...wall, x: j, y: i}" @click="toHere" v-for="(wall, j) in item" />
     </div>
     <div class="direction">
       <table>
@@ -27,6 +27,7 @@
 
 <script>
 import MapItem from './components/mapItem.vue'
+// import { getF } from './utils/index.js'
 export default {
   name: 'App',
   data() {
@@ -208,6 +209,77 @@ export default {
         this.people = people
         this.renderItem(people,'people')
         this.renderItem({x, y},'none')
+      }
+    },
+    toHere(end) {
+      const start = this.people
+      const This = this
+      // 不确定列表
+      const openArr = [start]
+      // 确定列表
+      const closeArr = []
+      doPath()
+      function doPath(){
+          if(openArr.length === 0) return alert('失败')
+          // 当前
+          let now = openArr.shift()
+          // 结束
+          if(toS(now) === toS(end)) return showLine(now)
+          // 获取当前节点的其他反向元素
+          const spaces = getSpace(now)
+          // eslint-disable-next-line no-debugger
+          // debugger
+          for (let index = 0; index < spaces.length; index++) {
+            const element = spaces[index];
+            if(noInList(element,'close')){
+              const H = Math.abs(end.x - element.x) * 10 + Math.abs(end.y - element.y) * 10
+              const G = 10;
+              // 不在开启列表
+              if(noInList(element,'open')) {
+                // This.map[element.y][element.x].type = ''
+                element.h = H
+                element.g = G
+                element.f = H + G
+                element.p = now
+                openArr.push(element)
+              } else {
+                if((H + G) < element.f) {
+                  console.log(22222)
+                  element.p = now
+                  element.g = G
+                  element.f = G + element.h
+                }
+              }
+            }
+          }
+          // 标记为已完成
+          closeArr.push(now)
+          openArr.sort(function(li1, li2) { 
+            return li1.f - li2.f
+          })
+          doPath()
+      }
+
+      function showLine(now){
+        This.map[now.y][now.x].type !== 'people' && (This.map[now.y][now.x].type = '')
+        now.p && showLine(now.p)
+      }
+
+      function noInList(itemInfo, type = 'open'){
+        const sourceArr = type === 'open' ? openArr : closeArr
+        const arr = sourceArr.map(itemInfos => toS(itemInfos))
+        return !arr.includes(toS(itemInfo))
+      }
+
+      function toS(data){
+        const {x =0,y=0} = data
+        return String(x+','+y)
+      }
+      function getSpace({x =0,y=0}){
+        // 上左右下
+        const scope = [{x, y: y -1},{x: x-1, y: y},{x: x + 1, y: y },{x: x, y:y + 1}]
+        const result = scope.filter(itemInfo => This.map[itemInfo.y] && This.map[itemInfo.y][itemInfo.x] && ('type' in This.map[itemInfo.y][itemInfo.x]) && ['none','','people'].includes(This.map[itemInfo.y][itemInfo.x].type))
+        return result
       }
     }
   }
