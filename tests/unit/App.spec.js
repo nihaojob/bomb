@@ -1,6 +1,10 @@
+
 import { shallowMount } from '@vue/test-utils'
 import App from '@/App.vue'
-
+// require('jsdom-global')()
+const window = global
+window.alert = function() {}
+window.event = { preventDefault: function() {}}
 describe('App init 渲染测试', () => {
 
   describe('地图', () => {
@@ -30,9 +34,62 @@ describe('App init 渲染测试', () => {
       expect(wrapper.vm.wills.length !== 0).toBe(true)
     })
 
-    it('bindKeyCode 事件绑定', () => {
+    it('bindKeyCode 事件绑定', async () => {
       const wrapper = shallowMount(App)
-      expect(wrapper.vm.wills.length !== 0).toBe(true)
+      wrapper.vm.run('up')
+      wrapper.vm.run('left')
+      wrapper.vm.run('right')
+      wrapper.vm.run('down')
+
+      var event = new KeyboardEvent('keydown', {'code': 'ArrowLeft'});
+      var event2 = new KeyboardEvent('keydown', {'code': 'Space'});
+      document.dispatchEvent(event);
+      document.dispatchEvent(event2);
+      // await wrapper.trigger('keydown.up')
+      // await wrapper.trigger('keydown.left')
+      // await wrapper.trigger('keydown.right')
+      // await wrapper.trigger('keydown.down')
+      expect(true).toBe(true)
+    })
+
+    function boom(key) {
+      const wrapper = shallowMount(App)
+      wrapper.vm.boom()
+      wrapper.vm.run(key)
+      wrapper.vm.run(key)
+      wrapper.vm.boom()
+      return wrapper
+    }
+    it('爆炸方法1', async () => {
+      boom('up')
+      expect(true).toBe(true)
+    })
+
+    it('爆炸方法2',  async () => {
+      const wrapper = shallowMount(App)
+      jest.useFakeTimers();
+      wrapper.vm.boom()
+      wrapper.vm.run('down')
+      wrapper.vm.run('down')
+      await wrapper.vm.boom()
+      jest.runAllTimers();
+      expect(true).toBe(true)
+    })
+
+    it('爆炸方法3', async () => {
+      boom('left')
+      expect(true).toBe(true)
+    })
+
+    it('爆炸方法4', async () => {
+      boom('right')
+      expect(true).toBe(true)
+    })
+
+    it('toHere 事件', async () => {
+      const wrapper = shallowMount(App)
+      wrapper.vm.toHere({ x :10, y : 20})
+      expect(true).toBe(true)
     })
 
   })
